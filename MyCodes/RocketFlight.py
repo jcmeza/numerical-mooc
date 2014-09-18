@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 rcParams['font.family'] = 'serif'
 rcParams['font.size'] = 16
+
 # model parameters
-m_s =  50     # weight of the rocket, kg
+m_s =  50.     # weight of the rocket, kg
 g = 9.8      # gravity in m s^{-2} 
 rho = 1.091  # average air density, kg/m^3
 r   = 0.5    # radius of rocket
@@ -42,9 +43,7 @@ def f(u,tn):
     else:
         mpdot = 0.
         
-    return np.array([v,
-        -g + v_e/(total_mass*mpdot - (0.5*rho*v*np.abs(v)*A*C_D)/(total_mass),
-                      ])
+    return np.array([v,-g + v_e/(total_mass)*mpdot - (0.5*rho*v*np.abs(v)*A*C_D)/(total_mass)])
                       
 def euler_step(u, f, dt, n):
     """Returns the solution at the next time-step using Euler's method.
@@ -67,7 +66,7 @@ def euler_step(u, f, dt, n):
     return u + dt * f(u,tn)
 
 
-T  = 10.0                          # final time
+T  = 40.0                          # final time
 dt = 0.1                           # time increment
 N  = int(T/dt) + 1                  # number of time-steps
 t  = np.linspace(0.0, T, N)      # time discretization
