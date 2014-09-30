@@ -1,16 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
-#matplotlib inline
 from matplotlib import rcParams
+
 rcParams['font.family'] = 'serif'
 rcParams['font.size'] = 16
 
 # model parameters
-m_s =  50.     # weight of the rocket, kg
-g   = 9.81     # gravity in m s^{-2} 
+m_s = 50.     # weight of the rocket, kg
+g = 9.81     # gravity in m s^{-2} 
 rho = 1.091  # average air density, kg/m^3
-r   = 0.5    # radius of rocket
-A   = np.pi*r**2 # cross sectional area of rocket
+r = 0.5    # radius of rocket
+A = np.pi*r**2 # cross sectional area of rocket
 v_e = 325.   # exhaust speed
 C_D = 0.15   # drag coefficient
 m_p0 = 100.   # initial weight of rocket propellant, kg
@@ -33,22 +33,20 @@ def f(u,n):
         array containing the RHS given u.
     """
     
-    h   = u[0] # not used here, but included for clarity
-    v   = u[1]
+    h = u[0] # not used here, but included for clarity
+    v = u[1]
     
     mdot = mpdot[n]
         
     m_p = m_p0 - mdot*t[n]
 
     if t[n] >= 5.0:
-        m_p = 0.0
+        m_p = 0.0 # all propellant used up after 5 seconds
         
     total_mass = m_s + m_p
-    rhs1 = -g
-    rhs2 = (v_e*mdot)/total_mass
-    rhs3 = -(0.5*rho*v*np.abs(v)*A*C_D)/total_mass
-    vrhs = rhs1 +  rhs2 + rhs3
-    #print total_mass, rhs1, rhs2, rhs3, vrhs
+    
+    vrhs = -g + (v_e*mdot)/total_mass -(0.5*rho*v*np.abs(v)*A*C_D)/total_mass
+    
     return np.array([v, vrhs])
                       
 def euler_step(u, f, dt, n):
@@ -71,11 +69,11 @@ def euler_step(u, f, dt, n):
     return u + dt*f(u,n)
 
 
-T  = 40.0                          # final time
+T = 40.0                          # final time
 dt = 0.1
                            # time increment
-N  = int(T/dt) + 1                  # number of time-steps
-t  = np.linspace(0.0, T, N)      # time discretization
+N = int(T/dt) + 1                  # number of time-steps
+t = np.linspace(0.0, T, N)      # time discretization
 
 #
 mpdot = np.zeros(t.shape)
@@ -91,6 +89,7 @@ for n in range(N-1):
     print t[n+1], u[n+1]
     
 # Answers to homework questions
+    
 height = u[:,0]
 velocity = u[:,1]
 vmax = np.max(velocity)
